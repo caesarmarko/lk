@@ -2,41 +2,91 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#101010">
     <title>VATAKAT - Профиль</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Montserrat:wght@400&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --color-bg: #101010;
+            --color-surface: #1e1e1e;
+            --color-surface-hover: #252525;
+            --color-text: #ffffff;
+            --color-text-secondary: rgba(255, 255, 255, 0.7);
+            --color-text-muted: rgba(255, 255, 255, 0.6);
+            
+            --gradient-active: linear-gradient(180deg, rgba(100, 255, 140, 0.35) 0%, rgba(50, 200, 100, 0.25) 30%, transparent 100%);
+            --gradient-warning: linear-gradient(180deg, rgba(255, 200, 80, 0.35) 0%, rgba(220, 160, 50, 0.25) 30%, transparent 100%);
+            --gradient-error: linear-gradient(180deg, rgba(255, 100, 100, 0.35) 0%, rgba(220, 50, 50, 0.25) 30%, transparent 100%);
+            --gradient-glass: linear-gradient(49deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.03) 100%);
+            --gradient-glass-hover: linear-gradient(49deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.06) 100%);
+            
+            --radius-sm: 13px;
+            --radius-md: 16px;
+            --radius-lg: 21px;
+            --radius-xl: 30px;
+            --radius-pill: 23px;
+            --radius-round: 50%;
+            
+            --spacing-xs: 8px;
+            --spacing-sm: 12px;
+            --spacing-md: 16px;
+            --spacing-lg: 24px;
+            --spacing-xl: 32px;
+            
+            --transition-fast: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-slow: 0.5s ease;
+            
+            --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.15);
+            --shadow-md: 0 8px 16px rgba(0, 0, 0, 0.2);
+            --shadow-lg: 0 12px 24px rgba(0, 0, 0, 0.25);
+            
+            --safe-area-top: env(safe-area-inset-top);
+            --safe-area-bottom: env(safe-area-inset-bottom);
+            --safe-area-left: env(safe-area-inset-left);
+            --safe-area-right: env(safe-area-inset-right);
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
         }
 
-        html, body {
+        html {
             width: 100%;
             height: 100%;
             overflow-x: hidden;
+            -webkit-text-size-adjust: 100%;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
 
         body {
-            background-color: #101010;
-            font-family: 'Inter', Helvetica, sans-serif;
-            color: white;
+            width: 100%;
             min-height: 100vh;
+            min-height: -webkit-fill-available;
+            background: var(--color-bg);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            color: var(--color-text);
             display: flex;
             align-items: center;
             justify-content: center;
-            position: relative;
+            overflow-x: hidden;
+            overscroll-behavior-y: contain;
+            touch-action: pan-y;
         }
 
-        /* Фон на весь экран */
         .background-wrapper {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: #101010;
+            inset: 0;
+            background: var(--color-bg);
             z-index: 0;
             overflow: hidden;
         }
@@ -49,47 +99,37 @@
             width: 150vw;
             height: 60vh;
             pointer-events: none;
-            transition: background 0.5s ease;
+            transition: background var(--transition-slow);
         }
 
-        /* Градиенты для разных состояний - сверху вниз */
-        .background-circle.active {
-            background: linear-gradient(180deg, rgba(100, 255, 140, 0.35) 0%, rgba(50, 200, 100, 0.25) 30%, rgba(255,255,255,0) 100%);
-        }
+        .background-circle.active { background: var(--gradient-active); }
+        .background-circle.warning { background: var(--gradient-warning); }
+        .background-circle.error { background: var(--gradient-error); }
 
-        .background-circle.warning {
-            background: linear-gradient(180deg, rgba(255, 200, 80, 0.35) 0%, rgba(220, 160, 50, 0.25) 30%, rgba(255,255,255,0) 100%);
-        }
-
-        .background-circle.error {
-            background: linear-gradient(180deg, rgba(255, 100, 100, 0.35) 0%, rgba(220, 50, 50, 0.25) 30%, rgba(255,255,255,0) 100%);
-        }
-
-        /* Контейнер с контентом по центру */
         .content-wrapper {
             position: relative;
             z-index: 1;
             width: 100%;
             max-width: 393px;
             min-height: 100vh;
+            min-height: -webkit-fill-available;
             display: flex;
             flex-direction: column;
+            padding-left: var(--safe-area-left);
+            padding-right: var(--safe-area-right);
         }
 
-        .iphone-container {
+        .container {
             width: 100%;
-            position: relative;
             flex: 1;
+            padding-bottom: calc(var(--safe-area-bottom) + 20px);
         }
 
-        /* Header Styles */
-        .header {
+        header {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 54px 24px 0;
-            position: relative;
-            z-index: 10;
+            padding: calc(var(--safe-area-top) + 54px) var(--spacing-lg) 0;
             opacity: 0;
             animation: fadeInUp 0.6s ease forwards;
         }
@@ -97,13 +137,13 @@
         .user-info {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: var(--spacing-sm);
         }
 
         .avatar {
             width: 40px;
             height: 40px;
-            border-radius: 50%;
+            border-radius: var(--radius-round);
             overflow: hidden;
         }
 
@@ -113,119 +153,112 @@
             object-fit: cover;
         }
 
-        .user-text h1 {
+        .user-name {
             font-weight: 700;
             font-size: 16px;
             line-height: 1;
         }
 
-        .user-text p {
+        .user-id {
             opacity: 0.6;
             font-size: 12px;
             margin-top: 2px;
         }
 
-        .notification-btn {
-            width: 40px;
-            height: 40px;
-            background: white;
-            border-radius: 50%;
+        .btn {
             border: none;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            position: relative;
+            overflow: hidden;
+            -webkit-user-select: none;
+            user-select: none;
+            -webkit-touch-callout: none;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            transition: opacity var(--transition-fast);
+        }
+
+        .btn:active {
+            transform: scale(0.92);
+        }
+
+        .btn:active::before {
+            opacity: 1;
+        }
+
+        .btn-round {
+            min-width: 44px;
+            min-height: 44px;
+            width: 44px;
+            height: 44px;
+            background: var(--color-text);
+            border-radius: var(--radius-round);
             display: flex;
             align-items: center;
             justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            overflow: hidden;
         }
 
-        .notification-btn::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 0;
-            height: 0;
-            border-radius: 50%;
-            background: rgba(0, 0, 0, 0.1);
-            transform: translate(-50%, -50%);
-            transition: width 0.4s ease, height 0.4s ease;
+        .btn-round::before {
+            background: rgba(0, 0, 0, 0.15);
+            border-radius: var(--radius-round);
         }
 
-        .notification-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(255, 255, 255, 0.2);
+        .btn-round svg { stroke: #000; }
+
+        @media (hover: hover) and (pointer: fine) {
+            .btn:hover::before { opacity: 1; }
+            .btn-round:hover {
+                transform: translateY(-2px);
+                box-shadow: var(--shadow-sm);
+            }
         }
 
-        .notification-btn:hover::before {
-            width: 100%;
-            height: 100%;
-        }
-
-        .notification-btn:active {
-            transform: translateY(0) scale(0.95);
-        }
-
-        .notification-btn svg {
-            stroke: #000;
-            position: relative;
-            z-index: 1;
-        }
-
-        /* Subscription Section */
         .subscription {
             display: flex;
             flex-direction: column;
             align-items: center;
             margin-top: 19px;
-            position: relative;
-            z-index: 10;
             opacity: 0;
             animation: fadeInUp 0.6s ease 0.2s forwards;
         }
 
         .subscription-label {
-            font-family: 'SF Pro Regular', Helvetica, sans-serif;
             font-size: 12px;
-            line-height: 14px;
-            color: rgba(255, 255, 255, 0.7);
+            color: var(--color-text-secondary);
         }
 
         .subscription-status {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: var(--spacing-xs);
             margin-top: 7px;
         }
 
-        .status-badge {
-            height: auto;
-            padding: 8px 16px;
-            gap: 8px;
-            border-radius: 23px;
-            backdrop-filter: blur(17.55px) brightness(100%);
-            background: linear-gradient(49deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.03) 100%);
+        .badge {
+            padding: var(--spacing-xs) var(--spacing-md);
+            border-radius: var(--radius-pill);
+            backdrop-filter: blur(17.55px);
+            background: var(--gradient-glass);
             display: inline-flex;
             align-items: center;
+            gap: var(--spacing-xs);
         }
 
         .status-text {
-            font-family: 'SF Pro Semibold', Helvetica, sans-serif;
             font-size: 32px;
+            font-weight: 600;
             line-height: 28px;
         }
 
         .date-badge {
             margin-top: 15px;
-            height: 27px;
-            padding: 6px 12px;
-            gap: 8px;
-            border-radius: 23px;
-            backdrop-filter: blur(17.55px) brightness(100%);
-            background: linear-gradient(49deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.03) 100%);
-            display: inline-flex;
-            align-items: center;
+            padding: 6px var(--spacing-sm);
         }
 
         .date-badge img {
@@ -235,24 +268,22 @@
         }
 
         .date-text {
-            font-family: 'Montserrat', Helvetica, sans-serif;
+            font-family: 'Montserrat', sans-serif;
             font-size: 12px;
-            line-height: 14px;
-            color: rgba(255, 255, 255, 0.7);
+            color: var(--color-text-secondary);
         }
 
-        /* Action Buttons */
         .action-buttons {
             display: flex;
             justify-content: center;
             gap: 10px;
             margin-top: 31px;
-            padding: 0 24px;
+            padding: 0 var(--spacing-lg);
             opacity: 0;
             animation: fadeInUp 0.6s ease 0.4s forwards;
         }
 
-        .action-button {
+        .action-item {
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -260,173 +291,93 @@
         }
 
         .action-btn {
+            min-width: 108px;
+            min-height: 60px;
             width: 108px;
-            height: 56px;
-            border-radius: 13px;
-            backdrop-filter: blur(17.55px) brightness(100%);
-            background: linear-gradient(49deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.03) 100%);
-            border: none;
+            height: 60px;
+            border-radius: var(--radius-sm);
+            backdrop-filter: blur(17.55px);
+            background: var(--gradient-glass);
             display: flex;
             align-items: center;
             justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            overflow: hidden;
         }
 
         .action-btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%);
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .action-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 25px rgba(255, 255, 255, 0.1);
-            background: linear-gradient(49deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.06) 100%);
-        }
-
-        .action-btn:hover::before {
-            opacity: 1;
-        }
-
-        .action-btn:active {
-            transform: translateY(-1px) scale(0.98);
+            background: var(--gradient-glass-hover);
         }
 
         .action-btn svg {
-            stroke: #fff;
-            position: relative;
-            z-index: 1;
-            transition: transform 0.3s ease;
+            stroke: var(--color-text);
+            transition: transform var(--transition-fast);
         }
 
-        .action-btn:hover svg {
-            transform: scale(1.1);
+        @media (hover: hover) and (pointer: fine) {
+            .action-btn:hover {
+                transform: translateY(-3px);
+                box-shadow: var(--shadow-md);
+            }
+
+            .action-btn:hover svg { transform: scale(1.1); }
         }
 
         .action-label {
-            font-family: 'SF Pro Regular', Helvetica, sans-serif;
             font-size: 12px;
-            line-height: 14px;
-            color: #fff;
         }
 
-        /* Main Button */
-        .main-button {
-            margin: 13px 24px 0;
+        .main-btn {
+            margin: 13px var(--spacing-lg) 0;
             width: calc(100% - 48px);
+            min-height: 137px;
             height: 137px;
-            background: #1e1e1e;
-            border: none;
-            border-radius: 30px;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            opacity: 0;
-            animation: fadeInUp 0.6s ease 0.6s forwards;
+            background: var(--color-surface);
+            border-radius: var(--radius-xl);
             display: flex;
             align-items: center;
             justify-content: flex-end;
-            padding-right: 24px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .main-button::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0) 100%);
+            padding-right: var(--spacing-lg);
             opacity: 0;
-            transition: opacity 0.3s ease;
+            animation: fadeInUp 0.6s ease 0.6s forwards;
         }
 
-        .main-button:hover {
-            transform: translateY(-3px);
-            background: #252525;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+        .main-btn svg {
+            stroke: var(--color-text);
+            transition: transform var(--transition-fast);
         }
 
-        .main-button:hover::before {
-            opacity: 1;
-        }
-
-        .main-button:active {
-            transform: translateY(-1px) scale(0.99);
-        }
-
-        .main-button svg {
-            stroke: #fff;
-            position: relative;
-            z-index: 1;
-            transition: transform 0.3s ease;
-        }
-
-        .main-button:hover svg {
-            transform: translateX(5px);
-        }
-
-        /* Settings Button */
-        .settings-button {
-            margin: 20px 24px 0;
+        .settings-btn {
+            margin: 20px var(--spacing-lg) 0;
             width: calc(100% - 48px);
-            height: 65px;
-            background: #1e1e1e;
-            border: none;
-            border-radius: 16px;
-            overflow: hidden;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            min-height: 72px;
+            height: 72px;
+            background: var(--color-surface);
+            border-radius: var(--radius-md);
             opacity: 0;
             animation: fadeInUp 0.6s ease 0.8s forwards;
-            position: relative;
         }
 
-        .settings-button::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0) 100%);
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
+        @media (hover: hover) and (pointer: fine) {
+            .main-btn:hover {
+                transform: translateY(-3px);
+                background: var(--color-surface-hover);
+                box-shadow: var(--shadow-lg);
+            }
 
-        .settings-button:hover {
-            transform: translateY(-3px);
-            background: #252525;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-        }
+            .main-btn:hover svg { transform: translateX(5px); }
 
-        .settings-button:hover::before {
-            opacity: 1;
-        }
-
-        .settings-button:active {
-            transform: translateY(-1px) scale(0.99);
+            .settings-btn:hover {
+                transform: translateY(-3px);
+                background: var(--color-surface-hover);
+                box-shadow: var(--shadow-md);
+            }
         }
 
         .settings-content {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            width: 100%;
             padding: 0 19px;
             height: 100%;
-            position: relative;
-            z-index: 1;
         }
 
         .settings-left {
@@ -436,22 +387,16 @@
         }
 
         .settings-icon {
-            width: 40px;
-            height: 40px;
+            min-width: 44px;
+            min-height: 44px;
+            width: 44px;
+            height: 44px;
             background: #010101;
-            border-radius: 50%;
+            border-radius: var(--radius-round);
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: transform 0.3s ease;
-        }
-
-        .settings-button:hover .settings-icon {
-            transform: rotate(90deg);
-        }
-
-        .settings-icon svg {
-            stroke: #fff;
+            transition: transform var(--transition-fast);
         }
 
         .settings-text {
@@ -461,80 +406,71 @@
             text-align: left;
         }
 
-        .settings-title {
-            font-family: 'SF Pro Regular', Helvetica, sans-serif;
-            font-size: 12px;
-            line-height: 14px;
-            color: #fff;
+        .settings-title { 
+            font-size: 13px;
+            line-height: 1.4;
         }
 
-        .settings-description {
-            font-family: 'SF Pro Regular', Helvetica, sans-serif;
-            font-size: 10px;
-            line-height: 14px;
-            color: #fff;
+        .settings-description { 
+            font-size: 11px;
+            line-height: 1.3;
+            color: var(--color-text-secondary);
         }
 
         .settings-content > svg {
-            stroke: #fff;
-            transition: transform 0.3s ease;
+            stroke: var(--color-text);
+            transition: transform var(--transition-fast);
+            flex-shrink: 0;
         }
 
-        .settings-button:hover .settings-content > svg {
-            transform: translateX(5px);
+        @media (hover: hover) and (pointer: fine) {
+            .settings-btn:hover .settings-icon { transform: rotate(90deg); }
+            .settings-btn:hover .settings-content > svg { transform: translateX(5px); }
         }
 
-        /* Statistics Section */
         .statistics {
-            padding: 39px 24px 32px;
+            padding: 39px var(--spacing-lg) var(--spacing-xl);
         }
 
         .statistics-title {
-            font-family: 'SF Pro Semibold', Helvetica, sans-serif;
             font-size: 16px;
-            line-height: 14px;
+            font-weight: 600;
             opacity: 0;
             animation: fadeInUp 0.6s ease 1s forwards;
         }
 
-        .stats-cards {
-            display: flex;
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
             gap: 25px;
             margin-top: 27px;
         }
 
         .stat-card {
-            flex: 1;
-            background: #1e1e1e;
-            border: none;
-            border-radius: 21px;
-            overflow: hidden;
+            background: var(--color-surface);
+            border-radius: var(--radius-lg);
             position: relative;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             cursor: pointer;
+            transition: all var(--transition-fast);
+            -webkit-user-select: none;
+            user-select: none;
         }
 
         .stat-card::before {
             content: '';
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0) 100%);
+            inset: 0;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, transparent 100%);
             opacity: 0;
-            transition: opacity 0.3s ease;
-            z-index: 1;
+            transition: opacity var(--transition-fast);
+            border-radius: var(--radius-lg);
         }
 
-        .stat-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+        .stat-card:active {
+            transform: scale(0.97);
         }
 
-        .stat-card:hover::before {
-            opacity: 1;
-        }
+        .stat-card:active::before { opacity: 1; }
 
         .stat-card:first-child {
             opacity: 0;
@@ -546,13 +482,21 @@
             animation: fadeInUp 0.6s ease 1.4s forwards;
         }
 
-        .card-content {
-            padding: 0;
+        @media (hover: hover) and (pointer: fine) {
+            .stat-card:hover {
+                transform: translateY(-5px);
+                box-shadow: var(--shadow-lg);
+            }
+
+            .stat-card:hover::before { opacity: 1; }
+        }
+
+        .card-body {
             height: 155px;
             display: flex;
             flex-direction: column;
             position: relative;
-            z-index: 10;
+            z-index: 2;
         }
 
         .card-header {
@@ -562,25 +506,32 @@
             padding: 13px 13px 0;
         }
 
-        .card-header svg {
-            stroke: #fff;
-            transition: transform 0.3s ease;
+        .card-header svg,
+        .card-header img {
+            width: 24px;
+            height: 24px;
+            transition: transform var(--transition-fast);
+            flex-shrink: 0;
         }
 
-        .stat-card:hover .card-header svg {
-            transform: scale(1.1);
+        .card-header img {
+            filter: brightness(0) invert(1);
+        }
+
+        @media (hover: hover) and (pointer: fine) {
+            .stat-card:hover .card-header svg,
+            .stat-card:hover .card-header img {
+                transform: scale(1.1);
+            }
         }
 
         .card-text {
-            font-family: 'SF Pro Regular', Helvetica, sans-serif;
             font-size: 12px;
-            line-height: 14px;
         }
 
         .card-value {
-            font-family: 'Nebulas Medium', Helvetica, sans-serif;
-            font-weight: 500;
             font-size: 32px;
+            font-weight: 500;
             line-height: 28px;
             padding: 0 18px 17px;
             margin-top: auto;
@@ -596,20 +547,16 @@
             pointer-events: none;
         }
 
-        /* Icons */
-        .icon {
+        .svg-icon {
             width: 24px;
             height: 24px;
-            color: white;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
         }
 
-        .chevron-icon {
-            width: 24px;
-            height: 24px;
-            stroke: white;
-        }
-
-        /* Animations */
         @keyframes fadeInUp {
             from {
                 opacity: 0;
@@ -621,88 +568,143 @@
             }
         }
 
-        /* Font face for SF Pro and Nebulas */
-        @font-face {
-            font-family: 'SF Pro Regular';
-            src: local('SF Pro Display'), local('SFProDisplay-Regular');
-            font-weight: 400;
-        }
-
-        @font-face {
-            font-family: 'SF Pro Semibold';
-            src: local('SF Pro Display Semibold'), local('SFProDisplay-Semibold');
-            font-weight: 600;
-        }
-
-        @font-face {
-            font-family: 'Nebulas Medium';
-            src: local('Nebulas Medium'), local('Nebulas-Medium');
-            font-weight: 500;
-        }
-
-        /* SVG Icons */
-        .svg-icon {
-            width: 24px;
-            height: 24px;
-            stroke: currentColor;
-            fill: none;
-            stroke-width: 2;
-            stroke-linecap: round;
-            stroke-linejoin: round;
-        }
-
-        /* ============ КНОПКА ============ */
-        /* Тестовая кнопка для переключения состояний - УДАЛИТЬ В ПРОДАКШЕНЕ */
-        .test-toggle-btn {
+        .test-toggle {
             position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: rgba(255, 255, 255, 0.9);
+            bottom: calc(var(--safe-area-bottom) + 20px);
+            right: calc(var(--safe-area-right) + 20px);
+            background: rgba(255, 255, 255, 0.95);
             color: #000;
             border: 2px solid #000;
             border-radius: 12px;
-            padding: 12px 20px;
-            font-family: 'Inter', sans-serif;
+            padding: 14px 22px;
+            min-height: 44px;
             font-weight: 600;
             font-size: 14px;
             cursor: pointer;
             z-index: 9999;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            transition: all var(--transition-fast);
+            box-shadow: var(--shadow-sm);
+            -webkit-user-select: none;
+            user-select: none;
+            -webkit-touch-callout: none;
+            backdrop-filter: blur(10px);
         }
 
-        .test-toggle-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+        .test-toggle:active { 
+            transform: scale(0.92);
+            box-shadow: var(--shadow-md);
         }
 
-        .test-toggle-btn:active {
-            transform: scale(0.95);
+        @media (hover: hover) and (pointer: fine) {
+            .test-toggle:hover {
+                transform: translateY(-2px);
+                box-shadow: var(--shadow-md);
+            }
         }
-        /* ============ КОНЕЦ КНОПКИ ============ */
+
+        /* Адаптация для очень маленьких устройств */
+        @media (max-width: 360px) {
+            header {
+                padding: calc(var(--safe-area-top) + 40px) var(--spacing-md) 0;
+            }
+
+            .action-buttons {
+                padding: 0 var(--spacing-md);
+                gap: 8px;
+            }
+
+            .action-btn {
+                width: 100px;
+                height: 56px;
+            }
+
+            .main-btn,
+            .settings-btn {
+                margin-left: var(--spacing-md);
+                margin-right: var(--spacing-md);
+                width: calc(100% - 32px);
+            }
+
+            .statistics {
+                padding: 30px var(--spacing-md) var(--spacing-lg);
+            }
+        }
+
+        /* Адаптация для планшетов */
+        @media (min-width: 768px) {
+            .content-wrapper {
+                max-width: 480px;
+            }
+
+            header {
+                padding: calc(var(--safe-area-top) + 60px) var(--spacing-xl) 0;
+            }
+
+            .action-buttons {
+                padding: 0 var(--spacing-xl);
+            }
+
+            .main-btn,
+            .settings-btn {
+                margin-left: var(--spacing-xl);
+                margin-right: var(--spacing-xl);
+                width: calc(100% - 64px);
+            }
+
+            .statistics {
+                padding: 45px var(--spacing-xl) var(--spacing-xl);
+            }
+        }
+
+        /* Ландшафтная ориентация на мобильных */
+        @media (max-height: 600px) and (orientation: landscape) {
+            header {
+                padding: calc(var(--safe-area-top) + 20px) var(--spacing-lg) 0;
+            }
+
+            .subscription {
+                margin-top: 12px;
+            }
+
+            .action-buttons {
+                margin-top: 20px;
+            }
+
+            .main-btn {
+                height: 100px;
+                min-height: 100px;
+                margin-top: 10px;
+            }
+
+            .settings-btn {
+                margin-top: 12px;
+            }
+
+            .statistics {
+                padding: 20px var(--spacing-lg) var(--spacing-lg);
+            }
+        }
     </style>
 </head>
 <body>
-    <!-- Фон на весь экран -->
     <div class="background-wrapper">
         <div class="background-circle active"></div>
     </div>
 
-    <!-- Контент по центру -->
     <div class="content-wrapper">
-        <div class="iphone-container">
-            <header class="header">
+        <div class="container">
+            <header>
                 <div class="user-info">
                     <div class="avatar">
                         <img src="https://c.animaapp.com/mhoovi5621eh7G/img/ellipse-988.png" alt="VATAKAT">
                     </div>
-                    <div class="user-text">
-                        <h1>Привет VATAKAT</h1>
-                        <p>id:5555</p>
+                    <div>
+                        <h1 class="user-name">Привет VATAKAT</h1>
+                        <p class="user-id">id:5555</p>
                     </div>
                 </div>
 
-                <button class="notification-btn">
+                <button class="btn btn-round" aria-label="Уведомления">
                     <svg class="svg-icon" viewBox="0 0 24 24">
                         <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
                         <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
@@ -713,22 +715,22 @@
             <section class="subscription">
                 <p class="subscription-label">Твоя подписка:</p>
                 <div class="subscription-status">
-                    <div class="status-badge">
+                    <div class="badge">
                         <h2 class="status-text">Активна</h2>
                     </div>
-                    <svg class="chevron-icon" viewBox="0 0 24 24">
+                    <svg class="svg-icon" viewBox="0 0 24 24">
                         <polyline points="9 18 15 12 9 6"/>
                     </svg>
                 </div>
-                <div class="date-badge">
-                    <img src="https://c.animaapp.com/mhoovi5621eh7G/img/outline-general-calendar.svg" alt="Calendar">
+                <div class="badge date-badge">
+                    <img src="https://c.animaapp.com/mhoovi5621eh7G/img/outline-general-calendar.svg" alt="">
                     <span class="date-text">до 27.11.2026</span>
                 </div>
             </section>
 
             <nav class="action-buttons">
-                <div class="action-button">
-                    <button class="action-btn">
+                <div class="action-item">
+                    <button class="btn action-btn" aria-label="Продлить">
                         <svg class="svg-icon" viewBox="0 0 24 24">
                             <line x1="12" y1="5" x2="12" y2="19"/>
                             <line x1="5" y1="12" x2="19" y2="12"/>
@@ -737,8 +739,8 @@
                     <span class="action-label">Продлить</span>
                 </div>
 
-                <div class="action-button">
-                    <button class="action-btn">
+                <div class="action-item">
+                    <button class="btn action-btn" aria-label="Профиль">
                         <svg class="svg-icon" viewBox="0 0 24 24">
                             <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
                             <circle cx="12" cy="7" r="4"></circle>
@@ -747,8 +749,8 @@
                     <span class="action-label">Профиль</span>
                 </div>
 
-                <div class="action-button">
-                    <button class="action-btn">
+                <div class="action-item">
+                    <button class="btn action-btn" aria-label="Поддержка">
                         <svg class="svg-icon" viewBox="0 0 24 24">
                             <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
                         </svg>
@@ -757,13 +759,13 @@
                 </div>
             </nav>
 
-            <button class="main-button">
-                <svg class="chevron-icon" viewBox="0 0 24 24">
+            <button class="btn main-btn" aria-label="Главная кнопка">
+                <svg class="svg-icon" viewBox="0 0 24 24">
                     <polyline points="9 18 15 12 9 6"/>
                 </svg>
             </button>
 
-            <button class="settings-button">
+            <button class="btn settings-btn">
                 <div class="settings-content">
                     <div class="settings-left">
                         <div class="settings-icon">
@@ -777,7 +779,7 @@
                             <p class="settings-description">Чтобы выполнить установку заново</p>
                         </div>
                     </div>
-                    <svg class="chevron-icon" viewBox="0 0 24 24">
+                    <svg class="svg-icon" viewBox="0 0 24 24">
                         <polyline points="9 18 15 12 9 6"/>
                     </svg>
                 </div>
@@ -786,9 +788,9 @@
             <section class="statistics">
                 <h3 class="statistics-title">Статистика</h3>
 
-                <div class="stats-cards">
-                    <div class="stat-card">
-                        <div class="card-content">
+                <div class="stats-grid">
+                    <article class="stat-card">
+                        <div class="card-body">
                             <div class="card-header">
                                 <svg class="svg-icon" viewBox="0 0 24 24">
                                     <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
@@ -797,66 +799,116 @@
                             </div>
                             <p class="card-value">1 гб</p>
                         </div>
-                        <img class="traffic-graph" src="https://c.animaapp.com/mhoovi5621eh7G/img/group-187.png" alt="Traffic graph">
-                    </div>
+                        <img class="traffic-graph" src="https://c.animaapp.com/mhoovi5621eh7G/img/group-187.png" alt="">
+                    </article>
 
-                    <div class="stat-card">
-                        <div class="card-content">
+                    <article class="stat-card">
+                        <div class="card-body">
                             <div class="card-header">
-                                <img src="https://c.animaapp.com/mhoovi5621eh7G/img/fluent-phone-desktop-16-regular.svg" alt="Devices" style="width: 24px; height: 24px; filter: brightness(0) invert(1);">
+                                <img src="https://c.animaapp.com/mhoovi5621eh7G/img/fluent-phone-desktop-16-regular.svg" alt="">
                                 <p class="card-text">Подключено устройств</p>
                             </div>
                             <p class="card-value">3</p>
                         </div>
-                    </div>
+                    </article>
                 </div>
             </section>
         </div>
     </div>
 
-    <!-- ============ КНОПКА ============ -->
-    <!-- Тестовая кнопка - УДАЛИТЬ В ПРОДАКШЕНЕ -->
-    <button class="test-toggle-btn" id="toggleBtn">Переключить: Активна</button>
-    <!-- ============ КОНЕЦ КНОПКИ ============ -->
+    <!-- Тестовая кнопка переключения состояний -->
+    <button class="test-toggle" id="toggleBtn">Переключить: Активна</button>
 
     <script>
-        // Добавляем обработчики для кнопок
-        document.addEventListener('DOMContentLoaded', function() {
-            const buttons = document.querySelectorAll('button:not(#toggleBtn)');
-            
-            buttons.forEach(button => {
-                button.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    console.log('Button clicked:', this.textContent || 'Icon button');
-                });
-            });
+        const STATES = [
+            { class: 'active', text: 'Активна', btnText: 'Переключить: Активна' },
+            { class: 'warning', text: 'Истекает', btnText: 'Переключить: Истекает' },
+            { class: 'error', text: 'Неактивна', btnText: 'Переключить: Неактивна' }
+        ];
 
-            // ============ КНОПКА ============
-            // Тестовая функция переключения состояний - УДАЛИТЬ В ПРОДАКШЕНЕ
+        // Haptic feedback для iOS
+        const hapticFeedback = () => {
+            if (navigator.vibrate) {
+                navigator.vibrate(10);
+            }
+            if (window.Telegram?.WebApp?.HapticFeedback) {
+                window.Telegram.WebApp.HapticFeedback.impactOccurred('light');
+            }
+        };
+
+        // Предотвращение bounce эффекта на iOS
+        const preventOverscroll = () => {
+            let startY = 0;
+            const container = document.querySelector('.content-wrapper');
+            
+            container.addEventListener('touchstart', (e) => {
+                startY = e.touches[0].pageY;
+            }, { passive: true });
+            
+            container.addEventListener('touchmove', (e) => {
+                const y = e.touches[0].pageY;
+                const scrollTop = container.scrollTop;
+                const scrollHeight = container.scrollHeight;
+                const height = container.clientHeight;
+                
+                if ((scrollTop <= 0 && y > startY) || 
+                    (scrollTop + height >= scrollHeight && y < startY)) {
+                    e.preventDefault();
+                }
+            }, { passive: false });
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const buttons = document.querySelectorAll('button:not(#toggleBtn)');
             const toggleBtn = document.getElementById('toggleBtn');
             const backgroundCircle = document.querySelector('.background-circle');
             const statusText = document.querySelector('.status-text');
             
-            let currentState = 0; // 0 = active (зеленый), 1 = warning (желтый), 2 = error (красный)
-            const states = [
-                { class: 'active', text: 'Активна', btnText: 'Переключить: Активна' },
-                { class: 'warning', text: 'Истекает', btnText: 'Переключить: Истекает' },
-                { class: 'error', text: 'Неактивна', btnText: 'Переключить: Неактивна' }
-            ];
+            let currentState = 0;
 
-            toggleBtn.addEventListener('click', function() {
-                // Убираем текущий класс
-                backgroundCircle.classList.remove(states[currentState].class);
-                
-                // Переходим к следующему состоянию
-                currentState = (currentState + 1) % states.length;
-                
-                // Добавляем новый класс и меняем текст
-                backgroundCircle.classList.add(states[currentState].class);
-                statusText.textContent = states[currentState].text;
-                toggleBtn.textContent = states[currentState].btnText;
+            // Добавляем тактильную обратную связь для всех кнопок
+            buttons.forEach(button => {
+                button.addEventListener('touchstart', hapticFeedback, { passive: true });
+                button.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    hapticFeedback();
+                    console.log('Button clicked:', button.textContent?.trim() || 'Icon button');
+                });
             });
-            // ============ КОНЕЦ КНОПКИ ============
+
+            // Обработка для тестовой кнопки переключения
+            toggleBtn.addEventListener('touchstart', hapticFeedback, { passive: true });
+            toggleBtn.addEventListener('click', () => {
+                hapticFeedback();
+                backgroundCircle.classList.remove(STATES[currentState].class);
+                currentState = (currentState + 1) % STATES.length;
+                const state = STATES[currentState];
+                
+                backgroundCircle.classList.add(state.class);
+                statusText.textContent = state.text;
+                toggleBtn.textContent = state.btnText;
+            });
+
+            // Добавляем тактильную обратную связь для карточек
+            document.querySelectorAll('.stat-card').forEach(card => {
+                card.addEventListener('touchstart', hapticFeedback, { passive: true });
+            });
+
+            // Устанавливаем высоту viewport для iOS
+            const setViewportHeight = () => {
+                const vh = window.innerHeight * 0.01;
+                document.documentElement.style.setProperty('--vh', `${vh}px`);
+            };
+            
+            setViewportHeight();
+            window.addEventListener('resize', setViewportHeight);
+            window.addEventListener('orientationchange', setViewportHeight);
+
+            // Предотвращаем overscroll
+            preventOverscroll();
+
+            // Скрываем адресную строку на мобильных устройствах
+            window.scrollTo(0, 1);
         });
     </script>
 </body>
