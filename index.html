@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VATAKAT - Профиль</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Montserrat:wght@400&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow-x: hidden;
+        }
+
+        body {
+            background-color: #101010;
+            font-family: 'Inter', Helvetica, sans-serif;
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        /* Фон на весь экран */
+        .background-wrapper {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #101010;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .background-circle {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 150vw;
+            height: 60vh;
+            pointer-events: none;
+            transition: background 0.5s ease;
+        }
+
+        /* Градиенты для разных состояний - сверху вниз */
+        .background-circle.active {
+            background: linear-gradient(180deg, rgba(100, 255, 140, 0.35) 0%, rgba(50, 200, 100, 0.25) 30%, rgba(255,255,255,0) 100%);
+        }
+
+        .background-circle.warning {
+            background: linear-gradient(180deg, rgba(255, 200, 80, 0.35) 0%, rgba(220, 160, 50, 0.25) 30%, rgba(255,255,255,0) 100%);
+        }
+
+        .background-circle.error {
+            background: linear-gradient(180deg, rgba(255, 100, 100, 0.35) 0%, rgba(220, 50, 50, 0.25) 30%, rgba(255,255,255,0) 100%);
+        }
+
+        /* Контейнер с контентом по центру */
+        .content-wrapper {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 393px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .iphone-container {
+            width: 100%;
+            position: relative;
+            flex: 1;
+        }
+
+        /* Header Styles */
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 54px 24px 0;
+            position: relative;
+            z-index: 10;
+            opacity: 0;
+            animation: fadeInUp 0.6s ease forwards;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            overflow: hidden;
+        }
+
+        .avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .user-text h1 {
+            font-weight: 700;
+            font-size: 16px;
+            line-height: 1;
+        }
+
+        .user-text p {
+            opacity: 0.6;
+            font-size: 12px;
+            margin-top: 2px;
+        }
+
+        .notification-btn {
+            width: 40px;
+            height: 40px;
+            background: white;
+            border-radius: 50%;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .notification-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0.1);
+            transform: translate(-50%, -50%);
+            transition: width 0.4s ease, height 0.4s ease;
+        }
+
+        .notification-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(255, 255, 255, 0.2);
+        }
+
+        .notification-btn:hover::before {
+            width: 100%;
+            height: 100%;
+        }
+
+        .notification-btn:active {
+            transform: translateY(0) scale(0.95);
+        }
+
+        .notification-btn svg {
+            stroke: #000;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Subscription Section */
+        .subscription {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 19px;
+            position: relative;
+            z-index: 10;
+            opacity: 0;
+            animation: fadeInUp 0.6s ease 0.2s forwards;
+        }
+
+        .subscription-label {
+            font-family: 'SF Pro Regular', Helvetica, sans-serif;
+            font-size: 12px;
+            line-height: 14px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .subscription-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 7px;
+        }
+
+        .status-badge {
+            height: auto;
+            padding: 8px 16px;
+            gap: 8px;
+            border-radius: 23px;
+            backdrop-filter: blur(17.55px) brightness(100%);
+            background: linear-gradient(49deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.03) 100%);
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .status-text {
+            font-family: 'SF Pro Semibold', Helvetica, sans-serif;
+            font-size: 32px;
+            line-height: 28px;
+        }
+
+        .date-badge {
+            margin-top: 15px;
+            height: 27px;
+            padding: 6px 12px;
+            gap: 8px;
+            border-radius: 23px;
+            backdrop-filter: blur(17.55px) brightness(100%);
+            background: linear-gradient(49deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.03) 100%);
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .date-badge img {
+            width: 12px;
+            height: 12px;
+            filter: brightness(0) invert(1);
+        }
+
+        .date-text {
+            font-family: 'Montserrat', Helvetica, sans-serif;
+            font-size: 12px;
+            line-height: 14px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 31px;
+            padding: 0 24px;
+            opacity: 0;
+            animation: fadeInUp 0.6s ease 0.4s forwards;
+        }
+
+        .action-button {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 7px;
+        }
+
+        .action-btn {
+            width: 108px;
+            height: 56px;
+            border-radius: 13px;
+            backdrop-filter: blur(17.55px) brightness(100%);
+            background: linear-gradient(49deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.03) 100%);
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .action-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(255, 255, 255, 0.1);
+            background: linear-gradient(49deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.06) 100%);
+        }
+
+        .action-btn:hover::before {
+            opacity: 1;
+        }
+
+        .action-btn:active {
+            transform: translateY(-1px) scale(0.98);
+        }
+
+        .action-btn svg {
+            stroke: #fff;
+            position: relative;
+            z-index: 1;
+            transition: transform 0.3s ease;
+        }
+
+        .action-btn:hover svg {
+            transform: scale(1.1);
+        }
+
+        .action-label {
+            font-family: 'SF Pro Regular', Helvetica, sans-serif;
+            font-size: 12px;
+            line-height: 14px;
+            color: #fff;
+        }
+
+        /* Main Button */
+        .main-button {
+            margin: 13px 24px 0;
+            width: calc(100% - 48px);
+            height: 137px;
+            background: #1e1e1e;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            opacity: 0;
+            animation: fadeInUp 0.6s ease 0.6s forwards;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 24px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .main-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0) 100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .main-button:hover {
+            transform: translateY(-3px);
+            background: #252525;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+        }
+
+        .main-button:hover::before {
+            opacity: 1;
+        }
+
+        .main-button:active {
+            transform: translateY(-1px) scale(0.99);
+        }
+
+        .main-button svg {
+            stroke: #fff;
+            position: relative;
+            z-index: 1;
+            transition: transform 0.3s ease;
+        }
+
+        .main-button:hover svg {
+            transform: translateX(5px);
+        }
+
+        /* Settings Button */
+        .settings-button {
+            margin: 20px 24px 0;
+            width: calc(100% - 48px);
+            height: 65px;
+            background: #1e1e1e;
+            border: none;
+            border-radius: 16px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            opacity: 0;
+            animation: fadeInUp 0.6s ease 0.8s forwards;
+            position: relative;
+        }
+
+        .settings-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0) 100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .settings-button:hover {
+            transform: translateY(-3px);
+            background: #252525;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .settings-button:hover::before {
+            opacity: 1;
+        }
+
+        .settings-button:active {
+            transform: translateY(-1px) scale(0.99);
+        }
+
+        .settings-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            padding: 0 19px;
+            height: 100%;
+            position: relative;
+            z-index: 1;
+        }
+
+        .settings-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .settings-icon {
+            width: 40px;
+            height: 40px;
+            background: #010101;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.3s ease;
+        }
+
+        .settings-button:hover .settings-icon {
+            transform: rotate(90deg);
+        }
+
+        .settings-icon svg {
+            stroke: #fff;
+        }
+
+        .settings-text {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            text-align: left;
+        }
+
+        .settings-title {
+            font-family: 'SF Pro Regular', Helvetica, sans-serif;
+            font-size: 12px;
+            line-height: 14px;
+            color: #fff;
+        }
+
+        .settings-description {
+            font-family: 'SF Pro Regular', Helvetica, sans-serif;
+            font-size: 10px;
+            line-height: 14px;
+            color: #fff;
+        }
+
+        .settings-content > svg {
+            stroke: #fff;
+            transition: transform 0.3s ease;
+        }
+
+        .settings-button:hover .settings-content > svg {
+            transform: translateX(5px);
+        }
+
+        /* Statistics Section */
+        .statistics {
+            padding: 39px 24px 32px;
+        }
+
+        .statistics-title {
+            font-family: 'SF Pro Semibold', Helvetica, sans-serif;
+            font-size: 16px;
+            line-height: 14px;
+            opacity: 0;
+            animation: fadeInUp 0.6s ease 1s forwards;
+        }
+
+        .stats-cards {
+            display: flex;
+            gap: 25px;
+            margin-top: 27px;
+        }
+
+        .stat-card {
+            flex: 1;
+            background: #1e1e1e;
+            border: none;
+            border-radius: 21px;
+            overflow: hidden;
+            position: relative;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0) 100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 1;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+        }
+
+        .stat-card:hover::before {
+            opacity: 1;
+        }
+
+        .stat-card:first-child {
+            opacity: 0;
+            animation: fadeInUp 0.6s ease 1.2s forwards;
+        }
+
+        .stat-card:last-child {
+            opacity: 0;
+            animation: fadeInUp 0.6s ease 1.4s forwards;
+        }
+
+        .card-content {
+            padding: 0;
+            height: 155px;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            z-index: 10;
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            padding: 13px 13px 0;
+        }
+
+        .card-header svg {
+            stroke: #fff;
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover .card-header svg {
+            transform: scale(1.1);
+        }
+
+        .card-text {
+            font-family: 'SF Pro Regular', Helvetica, sans-serif;
+            font-size: 12px;
+            line-height: 14px;
+        }
+
+        .card-value {
+            font-family: 'Nebulas Medium', Helvetica, sans-serif;
+            font-weight: 500;
+            font-size: 32px;
+            line-height: 28px;
+            padding: 0 18px 17px;
+            margin-top: auto;
+        }
+
+        .traffic-graph {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 97px;
+            object-fit: contain;
+            pointer-events: none;
+        }
+
+        /* Icons */
+        .icon {
+            width: 24px;
+            height: 24px;
+            color: white;
+        }
+
+        .chevron-icon {
+            width: 24px;
+            height: 24px;
+            stroke: white;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Font face for SF Pro and Nebulas */
+        @font-face {
+            font-family: 'SF Pro Regular';
+            src: local('SF Pro Display'), local('SFProDisplay-Regular');
+            font-weight: 400;
+        }
+
+        @font-face {
+            font-family: 'SF Pro Semibold';
+            src: local('SF Pro Display Semibold'), local('SFProDisplay-Semibold');
+            font-weight: 600;
+        }
+
+        @font-face {
+            font-family: 'Nebulas Medium';
+            src: local('Nebulas Medium'), local('Nebulas-Medium');
+            font-weight: 500;
+        }
+
+        /* SVG Icons */
+        .svg-icon {
+            width: 24px;
+            height: 24px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        /* ============ КНОПКА ============ */
+        /* Тестовая кнопка для переключения состояний - УДАЛИТЬ В ПРОДАКШЕНЕ */
+        .test-toggle-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            color: #000;
+            border: 2px solid #000;
+            border-radius: 12px;
+            padding: 12px 20px;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            z-index: 9999;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .test-toggle-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        .test-toggle-btn:active {
+            transform: scale(0.95);
+        }
+        /* ============ КОНЕЦ КНОПКИ ============ */
+    </style>
+</head>
+<body>
+    <!-- Фон на весь экран -->
+    <div class="background-wrapper">
+        <div class="background-circle active"></div>
+    </div>
+
+    <!-- Контент по центру -->
+    <div class="content-wrapper">
+        <div class="iphone-container">
+            <header class="header">
+                <div class="user-info">
+                    <div class="avatar">
+                        <img src="https://c.animaapp.com/mhoovi5621eh7G/img/ellipse-988.png" alt="VATAKAT">
+                    </div>
+                    <div class="user-text">
+                        <h1>Привет VATAKAT</h1>
+                        <p>id:5555</p>
+                    </div>
+                </div>
+
+                <button class="notification-btn">
+                    <svg class="svg-icon" viewBox="0 0 24 24">
+                        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+                        <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+                    </svg>
+                </button>
+            </header>
+
+            <section class="subscription">
+                <p class="subscription-label">Твоя подписка:</p>
+                <div class="subscription-status">
+                    <div class="status-badge">
+                        <h2 class="status-text">Активна</h2>
+                    </div>
+                    <svg class="chevron-icon" viewBox="0 0 24 24">
+                        <polyline points="9 18 15 12 9 6"/>
+                    </svg>
+                </div>
+                <div class="date-badge">
+                    <img src="https://c.animaapp.com/mhoovi5621eh7G/img/outline-general-calendar.svg" alt="Calendar">
+                    <span class="date-text">до 27.11.2026</span>
+                </div>
+            </section>
+
+            <nav class="action-buttons">
+                <div class="action-button">
+                    <button class="action-btn">
+                        <svg class="svg-icon" viewBox="0 0 24 24">
+                            <line x1="12" y1="5" x2="12" y2="19"/>
+                            <line x1="5" y1="12" x2="19" y2="12"/>
+                        </svg>
+                    </button>
+                    <span class="action-label">Продлить</span>
+                </div>
+
+                <div class="action-button">
+                    <button class="action-btn">
+                        <svg class="svg-icon" viewBox="0 0 24 24">
+                            <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                    </button>
+                    <span class="action-label">Профиль</span>
+                </div>
+
+                <div class="action-button">
+                    <button class="action-btn">
+                        <svg class="svg-icon" viewBox="0 0 24 24">
+                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                        </svg>
+                    </button>
+                    <span class="action-label">Поддержка</span>
+                </div>
+            </nav>
+
+            <button class="main-button">
+                <svg class="chevron-icon" viewBox="0 0 24 24">
+                    <polyline points="9 18 15 12 9 6"/>
+                </svg>
+            </button>
+
+            <button class="settings-button">
+                <div class="settings-content">
+                    <div class="settings-left">
+                        <div class="settings-icon">
+                            <svg class="svg-icon" viewBox="0 0 24 24">
+                                <circle cx="12" cy="12" r="3"/>
+                                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+                            </svg>
+                        </div>
+                        <div class="settings-text">
+                            <p class="settings-title">Установка и настрока</p>
+                            <p class="settings-description">Чтобы выполнить установку заново</p>
+                        </div>
+                    </div>
+                    <svg class="chevron-icon" viewBox="0 0 24 24">
+                        <polyline points="9 18 15 12 9 6"/>
+                    </svg>
+                </div>
+            </button>
+
+            <section class="statistics">
+                <h3 class="statistics-title">Статистика</h3>
+
+                <div class="stats-cards">
+                    <div class="stat-card">
+                        <div class="card-content">
+                            <div class="card-header">
+                                <svg class="svg-icon" viewBox="0 0 24 24">
+                                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                                </svg>
+                                <p class="card-text">Использовано трафика</p>
+                            </div>
+                            <p class="card-value">1 гб</p>
+                        </div>
+                        <img class="traffic-graph" src="https://c.animaapp.com/mhoovi5621eh7G/img/group-187.png" alt="Traffic graph">
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="card-content">
+                            <div class="card-header">
+                                <img src="https://c.animaapp.com/mhoovi5621eh7G/img/fluent-phone-desktop-16-regular.svg" alt="Devices" style="width: 24px; height: 24px; filter: brightness(0) invert(1);">
+                                <p class="card-text">Подключено устройств</p>
+                            </div>
+                            <p class="card-value">3</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <!-- ============ КНОПКА ============ -->
+    <!-- Тестовая кнопка - УДАЛИТЬ В ПРОДАКШЕНЕ -->
+    <button class="test-toggle-btn" id="toggleBtn">Переключить: Активна</button>
+    <!-- ============ КОНЕЦ КНОПКИ ============ -->
+
+    <script>
+        // Добавляем обработчики для кнопок
+        document.addEventListener('DOMContentLoaded', function() {
+            const buttons = document.querySelectorAll('button:not(#toggleBtn)');
+            
+            buttons.forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    console.log('Button clicked:', this.textContent || 'Icon button');
+                });
+            });
+
+            // ============ КНОПКА ============
+            // Тестовая функция переключения состояний - УДАЛИТЬ В ПРОДАКШЕНЕ
+            const toggleBtn = document.getElementById('toggleBtn');
+            const backgroundCircle = document.querySelector('.background-circle');
+            const statusText = document.querySelector('.status-text');
+            
+            let currentState = 0; // 0 = active (зеленый), 1 = warning (желтый), 2 = error (красный)
+            const states = [
+                { class: 'active', text: 'Активна', btnText: 'Переключить: Активна' },
+                { class: 'warning', text: 'Истекает', btnText: 'Переключить: Истекает' },
+                { class: 'error', text: 'Неактивна', btnText: 'Переключить: Неактивна' }
+            ];
+
+            toggleBtn.addEventListener('click', function() {
+                // Убираем текущий класс
+                backgroundCircle.classList.remove(states[currentState].class);
+                
+                // Переходим к следующему состоянию
+                currentState = (currentState + 1) % states.length;
+                
+                // Добавляем новый класс и меняем текст
+                backgroundCircle.classList.add(states[currentState].class);
+                statusText.textContent = states[currentState].text;
+                toggleBtn.textContent = states[currentState].btnText;
+            });
+            // ============ КОНЕЦ КНОПКИ ============
+        });
+    </script>
+</body>
+</html>
